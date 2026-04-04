@@ -144,6 +144,10 @@ uv run scripts/refresh.py --source stop-search
 uv run scripts/refresh.py --list
 ```
 
+## Related
+
+[**uk-police-api**](https://github.com/fenneh/uk-police-api) — Python client for the [data.police.uk](https://data.police.uk/docs/) REST API. Covers all 44 forces (not just the MPS), with street-level crime, stop and search, neighbourhoods, and outcomes queryable by coordinate, postcode, or polygon. Useful when you need live or recent data, specific addresses, or forces outside London.
+
 ## Sources
 
 > Contains public sector information licensed under the Open Government Licence v2.0.
