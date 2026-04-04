@@ -98,12 +98,12 @@ def vawg_victims(*, remote: bool = False) -> pl.DataFrame:
 
 
 def business_crime_offences(*, remote: bool = False) -> pl.DataFrame:
-    """Business crime offence counts by type, borough, and month. Rolling 24 months."""
+    """Business crime offence counts by type, borough, and month. ~3.5 years of data."""
     return _load("business-crime-offences.parquet", remote)
 
 
 def business_crime_outcomes(*, remote: bool = False) -> pl.DataFrame:
-    """Business crime outcome data by type, borough, and month. Rolling 24 months."""
+    """Business crime outcome data by type, borough, and month. ~3.5 years of data."""
     return _load("business-crime-outcomes.parquet", remote)
 
 
@@ -118,5 +118,5 @@ def stolen_animals(*, remote: bool = False) -> pl.DataFrame:
 
 
 def thorough_searches(*, remote: bool = False) -> pl.DataFrame:
-    """More thorough / intimate part search records (MTIPS). Ethnicity, age, outcome. Rolling 24 months."""
+    """More thorough / intimate part search records (MTIPS). Ethnicity, age, outcome. Jan 2019–present."""
     return _load("thorough-searches.parquet", remote)

@@ -49,7 +49,7 @@ def main() -> None:
     if args.dry_run:
         print("Would refresh:")
         for s in sources:
-            print(f"  {s['key']} ({s['ckan_id']})")
+            print(f"  {s['key']} ({s['short_id']})")
         return
 
     total_files = 0

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>London Crime Data</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #1a1a2e;
+      background: #f8f9fa;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 2rem 1.5rem;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      margin-top: 0.4rem;
+      color: #adb5bd;
+      font-size: 0.9rem;
+    }
+
+    header a { color: #74b9ff; text-decoration: none; }
+    header a:hover { text-decoration: underline; }
+
+    .notice {
+      background: #fff3cd;
+      border-left: 3px solid #856404;
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      color: #533f03;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-top: 0.25rem;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .chart-card {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+
+    .chart-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .chart-card h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 0.2rem;
+    }
+
+    .chart-card p {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 1rem;
+    }
+
+    canvas { width: 100% !important; }
+
+    footer {
+      background: #1a1a2e;
+      color: #adb5bd;
+      font-size: 0.8rem;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      line-height: 1.8;
+    }
+
+    footer a { color: #74b9ff; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 700px) {
+      .charts { grid-template-columns: 1fr; }
+      .chart-card.full-width { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>London Crime Data</h1>
+  <p>
+    MPS open datasets as Parquet files, refreshed monthly.
+    <a href="https://github.com/fenneh/london-crime-data">GitHub</a>
+  </p>
+</header>
+
+<div class="notice">
+  These figures are crimes recorded by the Metropolitan Police Service. Unreported crimes are not included.
+</div>
+
+<main>
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-value" id="stat-updated">...</div><div class="stat-label">Data through</div></div>
+    <div class="stat"><div class="stat-value" id="stat-stop-search">...</div><div class="stat-label">Stop and search records</div></div>
+    <div class="stat"><div class="stat-value" id="stat-vawg">...</div><div class="stat-label">VAWG offence records</div></div>
+    <div class="stat"><div class="stat-value" id="stat-homicide">...</div><div class="stat-label">Homicide records (from 2003)</div></div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-card full-width">
+      <h2>Monthly recorded crime</h2>
+      <p>Total offences across all MPS boroughs, Aug 2023–Jul 2025</p>
+      <canvas id="chart-monthly" height="80"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h2>Crime by category</h2>
+      <p>Top 10 major categories, total across all boroughs and months</p>
+      <canvas id="chart-category" height="220"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h2>Crime by borough</h2>
+      <p>Total recorded crime, all categories, Aug 2023–Jul 2025</p>
+      <canvas id="chart-borough" height="220"></canvas>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Data published by the Metropolitan Police Service under the
+  <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">Open Government Licence v2.0</a>.
+  Contains public sector information licensed under the Open Government Licence v2.0.<br>
+  Source: <a href="https://data.london.gov.uk/">London Datastore</a>.
+  Code and data: <a href="https://github.com/fenneh/london-crime-data">github.com/fenneh/london-crime-data</a>.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+  const BASE = "data/";
+
+  function fmt(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+    if (n >= 1e3) return (n / 1e3).toFixed(0) + "K";
+    return String(n);
+  }
+
+  async function loadJSON(path) {
+    const r = await fetch(path);
+    return r.json();
+  }
+
+  const PALETTE = [
+    "#264653", "#2a9d8f", "#457b9d", "#1d3557", "#606c38",
+    "#4a4e69", "#22577a", "#38a3a5", "#57cc99", "#80b918",
+  ];
+
+  async function init() {
+    const [meta, monthly, category, borough] = await Promise.all([
+      loadJSON(BASE + "meta.json"),
+      loadJSON(BASE + "monthly_totals.json"),
+      loadJSON(BASE + "by_category.json"),
+      loadJSON(BASE + "by_borough.json"),
+    ]);
+
+    document.getElementById("stat-updated").textContent = meta.updated || "--";
+    document.getElementById("stat-stop-search").textContent = fmt(meta.rows.stop_search || 0);
+    document.getElementById("stat-vawg").textContent = fmt(meta.rows.vawg_offences || 0);
+    document.getElementById("stat-homicide").textContent = fmt(meta.rows.homicide || 0);
+
+    new Chart(document.getElementById("chart-monthly"), {
+      type: "line",
+      data: {
+        labels: monthly.labels,
+        datasets: [{
+          data: monthly.values,
+          borderColor: "#1d3557",
+          backgroundColor: "rgba(29,53,87,0.08)",
+          borderWidth: 2,
+          pointRadius: 3,
+          fill: true,
+          tension: 0.3,
+        }],
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: { callback: v => fmt(v) },
+          },
+        },
+      },
+    });
+
+    new Chart(document.getElementById("chart-category"), {
+      type: "bar",
+      data: {
+        labels: category.labels,
+        datasets: [{
+          data: category.values,
+          backgroundColor: PALETTE,
+        }],
+      },
+      options: {
+        indexAxis: "y",
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { callback: v => fmt(v) } },
+          y: { ticks: { font: { size: 11 } } },
+        },
+      },
+    });
+
+    new Chart(document.getElementById("chart-borough"), {
+      type: "bar",
+      data: {
+        labels: borough.labels,
+        datasets: [{
+          data: borough.values,
+          backgroundColor: "#2a9d8f",
+        }],
+      },
+      options: {
+        indexAxis: "y",
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { callback: v => fmt(v) } },
+          y: { ticks: { font: { size: 11 } } },
+        },
+      },
+    });
+  }
+
+  init();
+</script>
+</body>
+</html>
