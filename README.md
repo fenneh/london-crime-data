@@ -4,7 +4,7 @@ MPS (Metropolitan Police Service) crime datasets as Parquet files, refreshed mon
 
 The MPS publishes all data via the [London Datastore](https://data.london.gov.uk/) under the [Open Government Licence v2.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/). These figures are crimes the MPS recorded, not all crimes that occurred.
 
-**[Browse the data interactively](https://fenneh.github.io/london-crime-data/)**
+**[Browse the data interactively](https://fenneh.github.io/london-crime-data/)** — **[Open in Colab](https://colab.research.google.com/github/fenneh/london-crime-data/blob/main/notebooks/explore_london_crime.ipynb)**
 
 ## Datasets
 
