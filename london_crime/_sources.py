@@ -94,14 +94,17 @@ SOURCES: list[dict] = [
     },
 
     # ── Monthly crime dashboard ───────────────────────────────────────────────
+    # The dataset publishes 3 separate rolling files: KnifeCrimeData, OtherCrimeData,
+    # TNOCrimeData (different schema, no crime_type column). We target KnifeCrimeData
+    # here as it's the only one with a consistent crime_type column across all rows.
     {
         "key": "monthly-crime-dashboard",
         "name": "MPS Monthly Crime Dashboard",
         "short_id": "e5n6w",
-        "resource_name_contains": "",
+        "resource_name_contains": "KnifeCrimeData",
         "prefer_historical": False,
         "output": "monthly-crime-dashboard.parquet",
-        "description": "Pan-London monthly crime totals by category with outcomes and rates.",
+        "description": "Pan-London monthly knife crime totals by area type and borough with outcomes and rates.",
     },
 
     # ── Custody ───────────────────────────────────────────────────────────────
