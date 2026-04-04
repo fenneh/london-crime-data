@@ -12,118 +12,195 @@
       font-size: 15px;
       line-height: 1.6;
       color: #1a1a2e;
-      background: #f8f9fa;
+      background: #f5f6f8;
     }
+
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     header {
       background: #1a1a2e;
       color: #fff;
-      padding: 2rem 1.5rem;
+      padding: 1.75rem 2rem;
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      flex-wrap: wrap;
     }
 
-    header h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-
-    header p {
-      margin-top: 0.4rem;
-      color: #adb5bd;
-      font-size: 0.9rem;
-    }
-
-    header a { color: #74b9ff; text-decoration: none; }
-    header a:hover { text-decoration: underline; }
+    header h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; }
+    header p { color: #94a3b8; font-size: 0.875rem; }
+    header a { color: #7dd3fc; }
 
     .notice {
-      background: #fff3cd;
-      border-left: 3px solid #856404;
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
-      color: #533f03;
+      background: #fef9c3;
+      border-bottom: 1px solid #fde047;
+      padding: 0.55rem 2rem;
+      font-size: 0.82rem;
+      color: #713f12;
     }
 
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
+    /* Stats */
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 1rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
 
     .stat {
       background: #fff;
-      border: 1px solid #dee2e6;
-      border-radius: 6px;
-      padding: 1rem 1.2rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
     }
 
-    .stat-value {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #1a1a2e;
-      line-height: 1.1;
+    .stat-value { font-size: 1.75rem; font-weight: 700; line-height: 1; color: #1a1a2e; }
+    .stat-label { font-size: 0.78rem; color: #64748b; margin-top: 0.3rem; }
+
+    /* Section heading */
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 2.5rem 0 1rem;
     }
 
-    .stat-label {
-      font-size: 0.8rem;
-      color: #6c757d;
-      margin-top: 0.25rem;
-    }
-
-    .charts {
+    /* Charts */
+    .charts-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     .chart-card {
       background: #fff;
-      border: 1px solid #dee2e6;
-      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
       padding: 1.25rem 1.5rem 1.5rem;
     }
 
-    .chart-card.full-width {
-      grid-column: 1 / -1;
-    }
+    .chart-card.wide { grid-column: 1 / -1; }
 
-    .chart-card h2 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #1a1a2e;
-      margin-bottom: 0.2rem;
-    }
+    .chart-card h2 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.15rem; }
+    .chart-card .sub { font-size: 0.78rem; color: #64748b; margin-bottom: 1rem; }
+    .chart-card .note { font-size: 0.72rem; color: #94a3b8; margin-top: 0.6rem; }
 
-    .chart-card p {
+    canvas { max-width: 100%; }
+
+    /* Data preview table */
+    .table-wrap { overflow-x: auto; margin-top: 0.75rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 0.8rem;
-      color: #6c757d;
-      margin-bottom: 1rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    canvas { width: 100% !important; }
+    th {
+      background: #f8fafc;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #475569;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    td {
+      padding: 0.5rem 0.9rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Datasets list */
+    .datasets {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .dataset-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .dataset-card .name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: "SF Mono", "Fira Code", monospace;
+      color: #1e293b;
+    }
+
+    .dataset-card .desc { font-size: 0.78rem; color: #64748b; }
+
+    .dataset-card .meta {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.1rem;
+    }
+
+    .dataset-card a {
+      font-size: 0.72rem;
+      margin-top: 0.2rem;
+      align-self: flex-start;
+    }
+
+    /* Code snippet */
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-top: 0.75rem;
+    }
+
+    .code-block .c { color: #64748b; }
+    .code-block .s { color: #86efac; }
+    .code-block .kw { color: #7dd3fc; }
 
     footer {
       background: #1a1a2e;
-      color: #adb5bd;
-      font-size: 0.8rem;
-      padding: 1.5rem;
+      color: #64748b;
+      font-size: 0.78rem;
+      padding: 1.5rem 2rem;
       margin-top: 3rem;
-      line-height: 1.8;
+      line-height: 2;
     }
 
-    footer a { color: #74b9ff; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: #7dd3fc; }
 
-    @media (max-width: 700px) {
-      .charts { grid-template-columns: 1fr; }
-      .chart-card.full-width { grid-column: auto; }
+    @media (max-width: 680px) {
+      main { padding: 1rem; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .chart-card.wide { grid-column: auto; }
+      header { padding: 1.25rem 1rem; }
     }
   </style>
 </head>
@@ -131,10 +208,7 @@
 
 <header>
   <h1>London Crime Data</h1>
-  <p>
-    MPS open datasets as Parquet files, refreshed monthly.
-    <a href="https://github.com/fenneh/london-crime-data">GitHub</a>
-  </p>
+  <p>MPS open datasets as Parquet files. Updated monthly. <a href="https://github.com/fenneh/london-crime-data">GitHub</a></p>
 </header>
 
 <div class="notice">
@@ -142,32 +216,201 @@
 </div>
 
 <main>
+
   <div class="stats" id="stats">
-    <div class="stat"><div class="stat-value" id="stat-updated">...</div><div class="stat-label">Data through</div></div>
-    <div class="stat"><div class="stat-value" id="stat-stop-search">...</div><div class="stat-label">Stop and search records</div></div>
-    <div class="stat"><div class="stat-value" id="stat-vawg">...</div><div class="stat-label">VAWG offence records</div></div>
-    <div class="stat"><div class="stat-value" id="stat-homicide">...</div><div class="stat-label">Homicide records (from 2003)</div></div>
+    <div class="stat">
+      <div class="stat-value" id="stat-updated">...</div>
+      <div class="stat-label">Latest data month</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-stop-search">...</div>
+      <div class="stat-label">Stop and search records (Jun 2020–present)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-vawg">...</div>
+      <div class="stat-label">VAWG offence records (Jan 2014–present)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-homicide">...</div>
+      <div class="stat-label">Homicide records (from 2003)</div>
+    </div>
   </div>
 
-  <div class="charts">
-    <div class="chart-card full-width">
+  <div class="section-title">Charts</div>
+
+  <div class="charts-grid">
+
+    <div class="chart-card">
       <h2>Monthly recorded crime</h2>
-      <p>Total offences across all MPS boroughs, Aug 2023–Jul 2025</p>
-      <canvas id="chart-monthly" height="80"></canvas>
+      <div class="sub">Total offences across all MPS boroughs, Aug 2023–Jul 2025</div>
+      <canvas id="chart-monthly" height="160"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h2>Knife crime</h2>
+      <div class="sub">Monthly knife crime offences, last 3 years</div>
+      <canvas id="chart-knife" height="160"></canvas>
     </div>
 
     <div class="chart-card">
       <h2>Crime by category</h2>
-      <p>Top 10 major categories, total across all boroughs and months</p>
-      <canvas id="chart-category" height="220"></canvas>
+      <div class="sub">Top 10 major offence categories, Aug 2023–Jul 2025</div>
+      <canvas id="chart-category" height="200"></canvas>
     </div>
 
     <div class="chart-card">
+      <h2>Stop and search by ethnicity</h2>
+      <div class="sub">Officer-defined ethnicity, records where field is populated</div>
+      <canvas id="chart-ethnicity" height="200"></canvas>
+      <div class="note" id="ethnicity-note"></div>
+    </div>
+
+    <div class="chart-card wide">
       <h2>Crime by borough</h2>
-      <p>Total recorded crime, all categories, Aug 2023–Jul 2025</p>
-      <canvas id="chart-borough" height="220"></canvas>
+      <div class="sub">Total recorded offences by MPS borough, Aug 2023–Jul 2025</div>
+      <canvas id="chart-borough" height="100"></canvas>
+    </div>
+
+  </div>
+
+  <div class="section-title">Data preview</div>
+
+  <p style="font-size:0.82rem;color:#64748b;margin-bottom:0.5rem;">
+    Sample rows from <code>recorded-crime-borough.parquet</code> — violence against the person, selected boroughs, last 3 months.
+    The full file has 1,015 rows and 27 columns (3 key columns + 24 monthly count columns).
+  </p>
+
+  <div class="table-wrap">
+    <table id="preview-table">
+      <thead id="preview-head"></thead>
+      <tbody id="preview-body"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Datasets</div>
+
+  <div class="datasets">
+    <div class="dataset-card">
+      <div class="name">recorded-crime-borough.parquet</div>
+      <div class="desc">Borough-level crime counts, last 24 months. Major + minor offence categories.</div>
+      <div class="meta"><span>~1K rows (wide)</span><span>Aug 2023–Jul 2025</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/recorded-crime-borough.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">recorded-crime-borough-historical.parquet</div>
+      <div class="desc">Same as above, from April 2010.</div>
+      <div class="meta"><span>~950 rows (wide)</span><span>Apr 2010–Jul 2023</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/recorded-crime-borough-historical.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">recorded-crime-ward.parquet</div>
+      <div class="desc">Ward-level crime counts with major + minor categories, last 24 months.</div>
+      <div class="meta"><span>~18K rows (wide)</span><span>Aug 2023–Jul 2025</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/recorded-crime-ward.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">recorded-crime-ward-historical.parquet</div>
+      <div class="desc">Ward-level, from April 2010.</div>
+      <div class="meta"><span>~19K rows (wide)</span><span>Apr 2010–Jul 2023</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/recorded-crime-ward-historical.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">recorded-crime-lsoa.parquet</div>
+      <div class="desc">LSOA-level crime counts, last 24 months.</div>
+      <div class="meta"><span>~101K rows (wide)</span><span>Aug 2023–Jul 2025</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/recorded-crime-lsoa.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">stop-search.parquet</div>
+      <div class="desc">Individual stop and search records. Ethnicity, legislation, object of search, outcome.</div>
+      <div class="meta"><span>1.35M rows</span><span>Jun 2020–Feb 2026</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/stop-search.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">monthly-crime-dashboard.parquet</div>
+      <div class="desc">Knife crime, domestic abuse, hate crime, gun crime — monthly totals by borough.</div>
+      <div class="meta"><span>472K rows</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/monthly-crime-dashboard.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">vawg-offences.parquet</div>
+      <div class="desc">Violence against women and girls offence counts by type, borough, month.</div>
+      <div class="meta"><span>411K rows</span><span>Jan 2014–present</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/vawg-offences.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">vawg-victims.parquet</div>
+      <div class="desc">VAWG victim demographics by offence type and borough.</div>
+      <div class="meta"><span>411K rows</span><span>Jan 2014–present</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/vawg-victims.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">homicide.parquet</div>
+      <div class="desc">Homicide records: method, demographics, borough, proceedings date.</div>
+      <div class="meta"><span>4.5K rows</span><span>from 2003</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/homicide.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">custody.parquet</div>
+      <div class="desc">Custody suite records: arrests by ethnicity, disposal type, strip searches.</div>
+      <div class="meta"><span>33K rows</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/custody.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">thorough-searches.parquet</div>
+      <div class="desc">More thorough and intimate part searches (MTIPS). Ethnicity, age, outcome.</div>
+      <div class="meta"><span>44K rows</span><span>Jan 2019–present</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/thorough-searches.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">business-crime-offences.parquet</div>
+      <div class="desc">Business crime offence counts by type, borough, month.</div>
+      <div class="meta"><span>291K rows</span><span>~3.5 years</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/business-crime-offences.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">business-crime-outcomes.parquet</div>
+      <div class="desc">Business crime outcomes by type, borough, month.</div>
+      <div class="meta"><span>407K rows</span><span>~3.5 years</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/business-crime-outcomes.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">stolen-animals.parquet</div>
+      <div class="desc">Stolen animal reports by species, borough, month.</div>
+      <div class="meta"><span>5.7K rows</span><span>Apr 2010–present</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/stolen-animals.parquet">Download</a>
+    </div>
+    <div class="dataset-card">
+      <div class="name">recorded-crime-lsoa-historical.parquet</div>
+      <div class="desc">LSOA-level crime counts from April 2010.</div>
+      <div class="meta"><span>~113K rows (wide)</span><span>Apr 2010–Jul 2023</span></div>
+      <a href="https://raw.githubusercontent.com/fenneh/london-crime-data/main/data/recorded-crime-lsoa-historical.parquet">Download</a>
     </div>
   </div>
+
+  <div class="section-title">Usage</div>
+
+  <div class="code-block"><span class="kw">import</span> polars <span class="kw">as</span> pl
+
+REPO = <span class="s">"https://raw.githubusercontent.com/fenneh/london-crime-data/main/data"</span>
+
+<span class="c"># Direct download — no clone needed</span>
+df = pl.read_parquet(<span class="s">f"{REPO}/recorded-crime-borough.parquet"</span>)
+
+<span class="c"># Geographic breakdown files are in wide format.</span>
+<span class="c"># Unpivot to get one row per (borough, category, month).</span>
+month_cols = [c <span class="kw">for</span> c <span class="kw">in</span> df.columns <span class="kw">if</span> c.isdigit()]
+long = df.unpivot(
+    on=month_cols,
+    index=[<span class="s">"majortext"</span>, <span class="s">"minortext"</span>, <span class="s">"boroughname"</span>],
+    variable_name=<span class="s">"month"</span>,
+    value_name=<span class="s">"count"</span>,
+)
+
+<span class="c"># Knife crime by borough</span>
+knife = long.filter(pl.col(<span class="s">"minortext"</span>).str.contains(<span class="s">"KNIFE|BLADE|WEAPON"</span>))
+print(knife.group_by(<span class="s">"boroughname"</span>).agg(pl.col(<span class="s">"count"</span>).sum()).sort(<span class="s">"count"</span>, descending=<span class="kw">True</span>))</div>
+
 </main>
 
 <footer>
@@ -179,102 +422,138 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
-  const BASE = "data/";
+const BASE = "data/";
+const NAVY = "#1d3557";
+const TEAL = "#2a9d8f";
+const RED  = "#c0392b";
 
-  function fmt(n) {
-    if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
-    if (n >= 1e3) return (n / 1e3).toFixed(0) + "K";
-    return String(n);
-  }
+const PALETTE = ["#1d3557","#2a9d8f","#457b9d","#e76f51","#606c38",
+                 "#4a4e69","#22577a","#38a3a5","#e9c46a","#264653"];
 
-  async function loadJSON(path) {
-    const r = await fetch(path);
-    return r.json();
-  }
+function fmt(n) {
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(0) + "K";
+  return String(n);
+}
 
-  const PALETTE = [
-    "#264653", "#2a9d8f", "#457b9d", "#1d3557", "#606c38",
-    "#4a4e69", "#22577a", "#38a3a5", "#57cc99", "#80b918",
-  ];
+function tickFmt(v) { return fmt(v); }
 
-  async function init() {
-    const [meta, monthly, category, borough] = await Promise.all([
-      loadJSON(BASE + "meta.json"),
-      loadJSON(BASE + "monthly_totals.json"),
-      loadJSON(BASE + "by_category.json"),
-      loadJSON(BASE + "by_borough.json"),
-    ]);
+async function load(name) {
+  const r = await fetch(BASE + name);
+  return r.json();
+}
 
-    document.getElementById("stat-updated").textContent = meta.updated || "--";
-    document.getElementById("stat-stop-search").textContent = fmt(meta.rows.stop_search || 0);
-    document.getElementById("stat-vawg").textContent = fmt(meta.rows.vawg_offences || 0);
-    document.getElementById("stat-homicide").textContent = fmt(meta.rows.homicide || 0);
+async function init() {
+  const [meta, monthly, knife, category, borough, ethnicity, sample] = await Promise.all([
+    load("meta.json"),
+    load("monthly_totals.json"),
+    load("knife_crime.json"),
+    load("by_category.json"),
+    load("by_borough.json"),
+    load("stop_search_ethnicity.json"),
+    load("sample_rows.json"),
+  ]);
 
-    new Chart(document.getElementById("chart-monthly"), {
-      type: "line",
-      data: {
-        labels: monthly.labels,
-        datasets: [{
-          data: monthly.values,
-          borderColor: "#1d3557",
-          backgroundColor: "rgba(29,53,87,0.08)",
-          borderWidth: 2,
-          pointRadius: 3,
-          fill: true,
-          tension: 0.3,
-        }],
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          y: {
-            beginAtZero: false,
-            ticks: { callback: v => fmt(v) },
-          },
-        },
-      },
+  // Stats
+  document.getElementById("stat-updated").textContent = meta.updated || "--";
+  document.getElementById("stat-stop-search").textContent = fmt(meta.rows.stop_search || 0);
+  document.getElementById("stat-vawg").textContent = fmt(meta.rows.vawg_offences || 0);
+  document.getElementById("stat-homicide").textContent = fmt(meta.rows.homicide || 0);
+
+  // Monthly crime trend
+  new Chart(document.getElementById("chart-monthly"), {
+    type: "line",
+    data: {
+      labels: monthly.labels,
+      datasets: [{ data: monthly.values, borderColor: NAVY,
+        backgroundColor: "rgba(29,53,87,0.07)", borderWidth: 2,
+        pointRadius: 2, fill: true, tension: 0.3 }],
+    },
+    options: { plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: false, ticks: { callback: tickFmt } } } },
+  });
+
+  // Knife crime trend
+  new Chart(document.getElementById("chart-knife"), {
+    type: "line",
+    data: {
+      labels: knife.labels,
+      datasets: [{ data: knife.values, borderColor: RED,
+        backgroundColor: "rgba(192,57,43,0.07)", borderWidth: 2,
+        pointRadius: 2, fill: true, tension: 0.3 }],
+    },
+    options: { plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: false, ticks: { callback: tickFmt } } } },
+  });
+
+  // Crime by category
+  new Chart(document.getElementById("chart-category"), {
+    type: "bar",
+    data: {
+      labels: category.labels,
+      datasets: [{ data: category.values, backgroundColor: PALETTE }],
+    },
+    options: {
+      indexAxis: "y",
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: tickFmt } }, y: { ticks: { font: { size: 11 } } } },
+    },
+  });
+
+  // Stop and search by ethnicity
+  new Chart(document.getElementById("chart-ethnicity"), {
+    type: "bar",
+    data: {
+      labels: ethnicity.labels,
+      datasets: [{ data: ethnicity.values, backgroundColor: PALETTE }],
+    },
+    options: {
+      indexAxis: "y",
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: tickFmt } }, y: { ticks: { font: { size: 11 } } } },
+    },
+  });
+  document.getElementById("ethnicity-note").textContent = ethnicity.note;
+
+  // Crime by borough
+  new Chart(document.getElementById("chart-borough"), {
+    type: "bar",
+    data: {
+      labels: borough.labels,
+      datasets: [{ data: borough.values, backgroundColor: TEAL }],
+    },
+    options: {
+      indexAxis: "y",
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { callback: tickFmt } }, y: { ticks: { font: { size: 11 } } } },
+    },
+  });
+
+  // Data preview table
+  const head = document.getElementById("preview-head");
+  const body = document.getElementById("preview-body");
+  const tr = document.createElement("tr");
+  sample.columns.forEach(c => {
+    const th = document.createElement("th");
+    th.textContent = c;
+    tr.appendChild(th);
+  });
+  head.appendChild(tr);
+
+  const numCols = new Set(["202505","202506","202507"]);
+  sample.rows.forEach(row => {
+    const tr = document.createElement("tr");
+    row.forEach((val, i) => {
+      const td = document.createElement("td");
+      td.textContent = val ?? "";
+      if (numCols.has(sample.columns[i])) td.className = "num";
+      tr.appendChild(td);
     });
+    body.appendChild(tr);
+  });
+}
 
-    new Chart(document.getElementById("chart-category"), {
-      type: "bar",
-      data: {
-        labels: category.labels,
-        datasets: [{
-          data: category.values,
-          backgroundColor: PALETTE,
-        }],
-      },
-      options: {
-        indexAxis: "y",
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { callback: v => fmt(v) } },
-          y: { ticks: { font: { size: 11 } } },
-        },
-      },
-    });
-
-    new Chart(document.getElementById("chart-borough"), {
-      type: "bar",
-      data: {
-        labels: borough.labels,
-        datasets: [{
-          data: borough.values,
-          backgroundColor: "#2a9d8f",
-        }],
-      },
-      options: {
-        indexAxis: "y",
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { callback: v => fmt(v) } },
-          y: { ticks: { font: { size: 11 } } },
-        },
-      },
-    });
-  }
-
-  init();
+init();
 </script>
 </body>
 </html>

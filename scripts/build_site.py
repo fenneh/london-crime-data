@@ -14,9 +14,27 @@ OUT_DIR = Path(__file__).parent.parent / "docs" / "data"
 def build_monthly_totals() -> dict:
     df = pl.read_parquet(DATA_DIR / "recorded-crime-borough.parquet")
     month_cols = sorted(c for c in df.columns if c.isdigit())
-    totals = {m: int(df[m].sum()) for m in month_cols}
     labels = [f"{m[:4]}-{m[4:]}" for m in month_cols]
-    return {"labels": labels, "values": list(totals.values())}
+    values = [int(df[m].sum()) for m in month_cols]
+    return {"labels": labels, "values": values}
+
+
+def build_knife_crime() -> dict:
+    df = pl.read_parquet(DATA_DIR / "monthly-crime-dashboard.parquet")
+    result = (
+        df.filter(
+            (pl.col("area_type") == "Borough")
+            & (pl.col("measure") == "Offences")
+            & (pl.col("crime_type") == "Knife Crime")
+        )
+        .group_by("month_year")
+        .agg(pl.col("count").sum())
+        .sort("month_year")
+        .tail(36)
+    )
+    labels = [str(d)[:7] for d in result["month_year"].to_list()]
+    values = [int(v) for v in result["count"].to_list()]
+    return {"labels": labels, "values": values}
 
 
 def build_by_category() -> dict:
@@ -49,26 +67,60 @@ def build_by_borough() -> dict:
     }
 
 
-def build_meta() -> dict:
-    files = {
-        "stop_search": "stop-search.parquet",
-        "recorded_crime_borough": "recorded-crime-borough.parquet",
-        "vawg_offences": "vawg-offences.parquet",
-        "homicide": "homicide.parquet",
+def build_stop_search_ethnicity() -> dict:
+    df = pl.read_parquet(DATA_DIR / "stop-search.parquet")
+    result = (
+        df.filter(
+            pl.col("ethnicappearance").is_not_null()
+            & (pl.col("ethnicappearance") != "Unknown")
+        )
+        .group_by("ethnicappearance")
+        .agg(pl.len().alias("stops"))
+        .sort("stops", descending=True)
+    )
+    return {
+        "labels": result["ethnicappearance"].to_list(),
+        "values": [int(v) for v in result["stops"].to_list()],
+        "note": "Officer-defined ethnicity. Covers records where this field is populated (~260K of 1.35M total).",
     }
-    rows = {}
-    for key, filename in files.items():
+
+
+def build_sample_rows() -> dict:
+    df = pl.read_parquet(DATA_DIR / "recorded-crime-borough.parquet")
+    month_cols = sorted(c for c in df.columns if c.isdigit())
+    recent = month_cols[-3:]
+    sample = (
+        df.select(["majortext", "minortext", "boroughname"] + recent)
+        .filter(
+            pl.col("majortext").str.contains("VIOLENCE")
+            & pl.col("boroughname").str.contains("Westminster|Southwark|Hackney|Tower Hamlets|Lambeth")
+        )
+        .head(8)
+    )
+    return {
+        "columns": sample.columns,
+        "rows": sample.rows(),
+    }
+
+
+def build_meta() -> dict:
+    sizes = {}
+    for name, filename in [
+        ("stop_search", "stop-search.parquet"),
+        ("vawg_offences", "vawg-offences.parquet"),
+        ("homicide", "homicide.parquet"),
+        ("thorough_searches", "thorough-searches.parquet"),
+    ]:
         path = DATA_DIR / filename
         if path.exists():
-            df = pl.scan_parquet(path)
-            rows[key] = df.select(pl.len()).collect().item()
+            sizes[name] = pl.scan_parquet(path).select(pl.len()).collect().item()
 
     borough = pl.read_parquet(DATA_DIR / "recorded-crime-borough.parquet")
     month_cols = sorted(c for c in borough.columns if c.isdigit())
-    latest_month = month_cols[-1] if month_cols else ""
-    updated = f"{latest_month[:4]}-{latest_month[4:]}" if latest_month else ""
+    latest = month_cols[-1] if month_cols else ""
+    updated = f"{latest[:4]}-{latest[4:]}" if latest else ""
 
-    return {"updated": updated, "rows": rows}
+    return {"updated": updated, "rows": sizes}
 
 
 def main() -> None:
@@ -76,8 +128,11 @@ def main() -> None:
 
     datasets = {
         "monthly_totals.json": build_monthly_totals,
+        "knife_crime.json": build_knife_crime,
         "by_category.json": build_by_category,
         "by_borough.json": build_by_borough,
+        "stop_search_ethnicity.json": build_stop_search_ethnicity,
+        "sample_rows.json": build_sample_rows,
         "meta.json": build_meta,
     }
 

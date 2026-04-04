@@ -2,7 +2,7 @@
 
 MPS (Metropolitan Police Service) crime datasets as Parquet files, refreshed monthly.
 
-All data is published by the MPS via the [London Datastore](https://data.london.gov.uk/) under the [Open Government Licence v2.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/). These figures cover crimes recorded by the MPS, not all crimes that occurred.
+The MPS publishes all data via the [London Datastore](https://data.london.gov.uk/) under the [Open Government Licence v2.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/). These figures are crimes the MPS recorded, not all crimes that occurred.
 
 ## Datasets
 
@@ -62,9 +62,9 @@ df = load.stop_search(remote=True)               # pull from GitHub without clon
 
 ## Geographic data: wide format
 
-The borough, ward, and LSOA files have one row per (location, major category, minor category) with monthly count columns. Columns: `majortext`, `minortext`, `boroughname` (or `wardname`/`lsoaname`), then `202308`, `202309`, ... `202507`.
+Each row covers one (location, major category, minor category) combination. Columns: `majortext`, `minortext`, `boroughname` (or `wardname`/`lsoaname`), then `202308`, `202309`, ... `202507`.
 
-To work with it in long format:
+Convert to long format with `unpivot`:
 
 ```python
 import polars as pl
@@ -106,7 +106,7 @@ by_ethnicity = (
 print(by_ethnicity)
 ```
 
-Note: the stop-search file combines snapshots with different schemas. The date is in `stopdate` (format `DD/MM/YYYY`) for records from Mar 2024 onwards, and `date` (format `YYYY-MM-DD`) for earlier records.
+The stop-search file combines snapshots from different schema versions. Records from Mar 2024 onwards use `stopdate` (DD/MM/YYYY); earlier records use `date` (YYYY-MM-DD).
 
 ## Refreshing locally
 
