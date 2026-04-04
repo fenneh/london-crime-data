@@ -436,7 +436,20 @@ function fmt(n) {
   return String(n);
 }
 
-function tickFmt(v) { return fmt(v); }
+function tickFmt(v) {
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + "M";
+  if (v >= 10000) return (v / 1e3).toFixed(0) + "K";
+  if (v >= 1000) return (v / 1e3).toFixed(1) + "K";
+  return String(v);
+}
+
+function fmtCol(col) {
+  if (/^\d{6}$/.test(col)) {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return months[parseInt(col.slice(4, 6)) - 1] + " " + col.slice(0, 4);
+  }
+  return col;
+}
 
 async function load(name) {
   const r = await fetch(BASE + name);
@@ -535,12 +548,12 @@ async function init() {
   const tr = document.createElement("tr");
   sample.columns.forEach(c => {
     const th = document.createElement("th");
-    th.textContent = c;
+    th.textContent = fmtCol(c);
     tr.appendChild(th);
   });
   head.appendChild(tr);
 
-  const numCols = new Set(["202505","202506","202507"]);
+  const numCols = new Set(sample.columns.filter(c => /^\d{6}$/.test(c)));
   sample.rows.forEach(row => {
     const tr = document.createElement("tr");
     row.forEach((val, i) => {
