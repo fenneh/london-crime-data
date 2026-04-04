@@ -59,14 +59,7 @@ def pick_resource(
     if not candidates:
         return None
 
-    # Prefer UUID-style resource IDs (more recently added) over 3-char IDs
-    def sort_key(r: dict) -> tuple:
-        rid = r.get("id", "")
-        is_uuid = len(rid) > 10
-        created = r.get("created", "") or ""
-        return (int(is_uuid), created)
-
-    candidates.sort(key=sort_key, reverse=True)
+    # CKAN returns resources newest-first; take the first match.
     return candidates[0]
 
 

@@ -268,7 +268,7 @@
     <div class="chart-card wide">
       <h2>Crime by borough</h2>
       <div class="sub">Total recorded offences by MPS borough, Aug 2023–Jul 2025</div>
-      <canvas id="chart-borough" height="100"></canvas>
+      <canvas id="chart-borough" style="height:620px"></canvas>
     </div>
 
   </div>
@@ -536,9 +536,11 @@ async function init() {
       datasets: [{ data: borough.values, backgroundColor: TEAL }],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       indexAxis: "y",
       plugins: { legend: { display: false } },
-      scales: { x: { ticks: { callback: tickFmt } }, y: { ticks: { font: { size: 11 } } } },
+      scales: { x: { ticks: { callback: tickFmt } }, y: { ticks: { font: { size: 11 }, autoSkip: false } } },
     },
   });
 
