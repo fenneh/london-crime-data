@@ -1,0 +1,48 @@
+name: Refresh data
+
+on:
+  schedule:
+    - cron: "0 6 6 * *"  # 6th of each month at 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Source key to refresh (leave blank for all)"
+        required: false
+        default: ""
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Refresh datasets
+        run: |
+          if [ -n "${{ github.event.inputs.source }}" ]; then
+            uv run scripts/refresh.py --source "${{ github.event.inputs.source }}"
+          else
+            uv run scripts/refresh.py
+          fi
+
+      - name: Commit updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ london_crime/_sources.py
+          if git diff --staged --quiet; then
+            echo "No changes."
+          else
+            git commit -m "data: refresh $(date +'%Y-%m')"
+            git push
+          fi
