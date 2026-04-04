@@ -141,7 +141,8 @@ SOURCES: list[dict] = [
     },
 
     # ── Business crime ────────────────────────────────────────────────────────
-    # Consistent 7-column schema across all ~21 resources — combine all for ~3.5 years.
+    # stride=4 keeps memory usage manageable (6 downloads vs 24) while still
+    # spanning the full ~3.5 year history.
     {
         "key": "business-crime-offences",
         "name": "MPS Business Crime: Offences",
@@ -149,9 +150,9 @@ SOURCES: list[dict] = [
         "resource_name_contains": "OffencesData",
         "prefer_historical": False,
         "combine_resources": True,
-        "combine_stride": 1,
+        "combine_stride": 4,
         "output": "business-crime-offences.parquet",
-        "description": "Business crime offence counts by type, borough, and month. Combined from all snapshots (~3.5 years).",
+        "description": "Business crime offence counts by type, borough, and month. Combined from sampled snapshots (~3.5 years).",
     },
     {
         "key": "business-crime-outcomes",
@@ -160,9 +161,9 @@ SOURCES: list[dict] = [
         "resource_name_contains": "OutcomesData",
         "prefer_historical": False,
         "combine_resources": True,
-        "combine_stride": 1,
+        "combine_stride": 4,
         "output": "business-crime-outcomes.parquet",
-        "description": "Business crime outcome data by type, borough, and month. Combined from all snapshots (~3.5 years).",
+        "description": "Business crime outcome data by type, borough, and month. Combined from sampled snapshots (~3.5 years).",
     },
 
     # ── Homicide ──────────────────────────────────────────────────────────────
