@@ -17,10 +17,10 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86  # v5
         with:
           python-version: "3.12"
 
@@ -28,9 +28,11 @@ jobs:
         run: uv sync
 
       - name: Refresh datasets
+        env:
+          INPUT_SOURCE: ${{ github.event.inputs.source }}
         run: |
-          if [ -n "${{ github.event.inputs.source }}" ]; then
-            uv run scripts/refresh.py --source "${{ github.event.inputs.source }}"
+          if [ -n "$INPUT_SOURCE" ]; then
+            uv run scripts/refresh.py --source "$INPUT_SOURCE"
           else
             uv run scripts/refresh.py
           fi
@@ -45,7 +47,17 @@ jobs:
           git add data/ docs/data/ london_crime/_sources.py
           if git diff --staged --quiet; then
             echo "No changes."
-          else
-            git commit -m "data: refresh $(date +'%Y-%m')"
-            git push
+            exit 0
           fi
+          git commit -m "data: refresh $(date +'%Y-%m')"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push; then
+              echo "Pushed on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected on attempt $attempt, retrying..."
+            sleep 5
+          done
+          echo "Push failed after 5 attempts."
+          exit 1
