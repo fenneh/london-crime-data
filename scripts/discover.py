@@ -135,10 +135,10 @@ def discover(source_key: str | None = None) -> None:
             print(f"\n  Add these to direct_urls for '{key}' in london_crime/_sources.py")
         else:
             page_url = DATASET_PAGES.get(key, "")
-            print(f"  Automated discovery failed.")
+            print("  Automated discovery failed.")
             if page_url:
                 print(f"  → Open manually: {page_url}")
-                print(f"    Right-click CSV/Excel link → Copy link address")
+                print("    Right-click CSV/Excel link → Copy link address")
                 print(f"    Add to direct_urls for '{key}' in london_crime/_sources.py")
 
 

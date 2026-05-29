@@ -1,7 +1,6 @@
 """Tests for london_crime._fetch pure functions."""
 
 import polars as pl
-import pytest
 
 from london_crime._fetch import _concat, _filter_resources, normalise, pick_resource
 
