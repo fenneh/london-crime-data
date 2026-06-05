@@ -36,31 +36,8 @@ def pick_resource(
     prefer_historical: bool,
 ) -> dict[str, Any] | None:
     """Pick the best (most recent) matching resource."""
-    historical_marker = "(Historical)"
-
-    def matches(r: dict) -> bool:
-        name = r.get("name", "")
-        url  = r.get("url", "")
-        # Must be a CSV or Excel
-        if not any(url.lower().endswith(ext) for ext in (".csv", ".xlsx", ".xls")):
-            if r.get("format", "").lower() not in ("csv", "xlsx", "xls"):
-                return False
-        # Must match name hint
-        if name_contains and name_contains.lower() not in name.lower():
-            return False
-        # Historical filter
-        if prefer_historical and historical_marker not in name:
-            return False
-        if not prefer_historical and historical_marker in name:
-            return False
-        return True
-
-    candidates = [r for r in resources if matches(r)]
-    if not candidates:
-        return None
-
-    # CKAN returns resources newest-first; take the first match.
-    return candidates[0]
+    candidates = _filter_resources(resources, name_contains, prefer_historical)
+    return candidates[0] if candidates else None
 
 
 # ── Download + parse ───────────────────────────────────────────────────────────
