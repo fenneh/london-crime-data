@@ -79,7 +79,8 @@ def parse_excel(data: bytes) -> pl.DataFrame:
         if not data_rows:
             continue
         df = pl.DataFrame(
-            {h: [r[i] if i < len(r) else None for r in data_rows] for i, h in enumerate(headers)}
+            {h: [r[i] if i < len(r) else None for r in data_rows] for i, h in enumerate(headers)},
+            strict=False,
         )
         df = df.with_columns(pl.lit(sheet).alias("_sheet"))
         frames.append(df)
