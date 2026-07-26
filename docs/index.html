@@ -404,14 +404,14 @@ df = pl.read_parquet(<span class="s">f"{REPO}/recorded-crime-borough.parquet"</s
 month_cols = [c <span class="kw">for</span> c <span class="kw">in</span> df.columns <span class="kw">if</span> c.isdigit()]
 long = df.unpivot(
     on=month_cols,
-    index=[<span class="s">"majortext"</span>, <span class="s">"minortext"</span>, <span class="s">"boroughname"</span>],
+    index=[<span class="s">"group"</span>, <span class="s">"subgroup"</span>, <span class="s">"bocu"</span>],
     variable_name=<span class="s">"month"</span>,
     value_name=<span class="s">"count"</span>,
 )
 
 <span class="c"># Knife crime by borough</span>
-knife = long.filter(pl.col(<span class="s">"minortext"</span>).str.contains(<span class="s">"KNIFE|BLADE|WEAPON"</span>))
-print(knife.group_by(<span class="s">"boroughname"</span>).agg(pl.col(<span class="s">"count"</span>).sum()).sort(<span class="s">"count"</span>, descending=<span class="kw">True</span>))</div>
+knife = long.filter(pl.col(<span class="s">"subgroup"</span>).str.contains(<span class="s">"KNIFE|BLADE|WEAPON"</span>))
+print(knife.group_by(<span class="s">"bocu"</span>).agg(pl.col(<span class="s">"count"</span>).sum()).sort(<span class="s">"count"</span>, descending=<span class="kw">True</span>))</div>
 
 </main>
 

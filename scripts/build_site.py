@@ -42,12 +42,12 @@ def build_by_category() -> dict:
     month_cols = [c for c in df.columns if c.isdigit()]
     result = (
         df.with_columns(pl.sum_horizontal(month_cols).alias("total"))
-        .group_by("majortext")
+        .group_by("group")
         .agg(pl.col("total").sum())
         .sort("total", descending=True)
         .head(10)
     )
-    labels = [s.title() for s in result["majortext"].to_list()]
+    labels = [s.title() for s in result["group"].to_list()]
     values = [int(v) for v in result["total"].to_list()]
     return {"labels": labels, "values": values}
 
@@ -57,12 +57,12 @@ def build_by_borough() -> dict:
     month_cols = [c for c in df.columns if c.isdigit()]
     result = (
         df.with_columns(pl.sum_horizontal(month_cols).alias("total"))
-        .group_by("boroughname")
+        .group_by("bocu")
         .agg(pl.col("total").sum())
         .sort("total", descending=True)
     )
     return {
-        "labels": result["boroughname"].to_list(),
+        "labels": result["bocu"].to_list(),
         "values": [int(v) for v in result["total"].to_list()],
     }
 
@@ -90,10 +90,10 @@ def build_sample_rows() -> dict:
     month_cols = sorted(c for c in df.columns if c.isdigit())
     recent = month_cols[-3:]
     sample = (
-        df.select(["majortext", "minortext", "boroughname"] + recent)
+        df.select(["group", "subgroup", "bocu"] + recent)
         .filter(
-            pl.col("majortext").str.contains("VIOLENCE")
-            & pl.col("boroughname").str.contains("Westminster|Southwark|Hackney|Tower Hamlets|Lambeth")
+            pl.col("group").str.contains("VIOLENCE")
+            & pl.col("bocu").str.contains("Westminster|Southwark|Hackney|Tower Hamlets|Lambeth")
         )
         .head(8)
     )

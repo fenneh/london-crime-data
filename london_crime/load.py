@@ -39,7 +39,7 @@ def _load(filename: str, remote: bool) -> pl.DataFrame:
 def recorded_crime_borough(*, historical: bool = False, remote: bool = False) -> pl.DataFrame:
     """Monthly crime counts by London borough with major + minor offence categories.
 
-    Columns: majortext, minortext, boroughname, then monthly count columns (e.g. 202308).
+    Columns: group, subgroup, bocu, then monthly count columns (e.g. 202308).
 
     This is the richest sub-category dataset — violent crime breaks down into
     Common Assault, GBH, Harassment, Stalking, etc.
