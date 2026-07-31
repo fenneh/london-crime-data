@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import logging
+import time
 from pathlib import Path
 from typing import Any
 
@@ -42,11 +43,18 @@ def pick_resource(
 
 # ── Download + parse ───────────────────────────────────────────────────────────
 
-def download_url(url: str) -> bytes:
+def download_url(url: str, max_retries: int = 5) -> bytes:
     logger.info("  Downloading: %s", url)
-    r = httpx.get(url, timeout=300, follow_redirects=True)
-    r.raise_for_status()
-    return r.content
+    for attempt in range(max_retries):
+        r = httpx.get(url, timeout=300, follow_redirects=True)
+        if r.status_code == 429 and attempt < max_retries - 1:
+            wait = float(r.headers.get("Retry-After", 2**attempt))
+            logger.warning("  429 rate limited, retrying in %.1fs", wait)
+            time.sleep(wait)
+            continue
+        r.raise_for_status()
+        return r.content
+    raise AssertionError("unreachable")
 
 
 def parse_csv(data: bytes) -> pl.DataFrame:

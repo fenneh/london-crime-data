@@ -1,8 +1,10 @@
 """Tests for london_crime._fetch pure functions."""
 
+from unittest.mock import Mock, patch
+
 import polars as pl
 
-from london_crime._fetch import _concat, _filter_resources, normalise, pick_resource
+from london_crime._fetch import _concat, _filter_resources, download_url, normalise, pick_resource
 
 
 def _res(name: str, url: str = "", fmt: str = "") -> dict:
@@ -130,6 +132,52 @@ class TestNormalise:
         df = pl.DataFrame({"rate": ["1.5", "2.7"]})
         out = normalise(df)
         assert out["rate"].dtype == pl.Float64
+
+
+class TestDownloadUrl:
+    def _response(self, status: int, headers: dict | None = None) -> Mock:
+        r = Mock()
+        r.status_code = status
+        r.headers = headers or {}
+        if status == 429:
+            r.raise_for_status.side_effect = Exception("429")
+        return r
+
+    def test_returns_content_on_success(self):
+        ok = self._response(200)
+        ok.content = b"data"
+        with patch("london_crime._fetch.httpx.get", return_value=ok) as get:
+            assert download_url("https://example.com/f.csv") == b"data"
+            assert get.call_count == 1
+
+    def test_retries_on_429_then_succeeds(self):
+        ok = self._response(200)
+        ok.content = b"data"
+        rate_limited = self._response(429)
+        with patch("london_crime._fetch.httpx.get", side_effect=[rate_limited, ok]):
+            with patch("london_crime._fetch.time.sleep") as sleep:
+                assert download_url("https://example.com/f.csv") == b"data"
+                sleep.assert_called_once()
+
+    def test_honours_retry_after_header(self):
+        ok = self._response(200)
+        ok.content = b"data"
+        rate_limited = self._response(429, headers={"Retry-After": "7"})
+        with patch("london_crime._fetch.httpx.get", side_effect=[rate_limited, ok]):
+            with patch("london_crime._fetch.time.sleep") as sleep:
+                download_url("https://example.com/f.csv")
+                sleep.assert_called_once_with(7.0)
+
+    def test_gives_up_after_max_retries(self):
+        rate_limited = self._response(429)
+        with patch("london_crime._fetch.httpx.get", return_value=rate_limited):
+            with patch("london_crime._fetch.time.sleep"):
+                try:
+                    download_url("https://example.com/f.csv", max_retries=2)
+                    raised = False
+                except Exception:
+                    raised = True
+                assert raised
 
 
 class TestConcat:
