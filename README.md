@@ -1,5 +1,9 @@
 # london-crime-data
 
+[![CI](https://github.com/fenneh/london-crime-data/actions/workflows/ci.yml/badge.svg)](https://github.com/fenneh/london-crime-data/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+
 MPS (Metropolitan Police Service) crime datasets as Parquet files, refreshed monthly.
 
 The MPS publishes all data via the [London Datastore](https://data.london.gov.uk/) under the [Open Government Licence v2.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/). These figures are crimes the MPS recorded, not all crimes that occurred.
@@ -150,7 +154,7 @@ uv run scripts/refresh.py --list
 
 ## Sources
 
-> Contains public sector information licensed under the Open Government Licence v2.0.
+> Contains public sector information licensed under the Open Government Licence v2.0. Code in this repo is [MIT licensed](LICENSE); the datasets themselves remain under OGL v2.0.
 
 | Dataset | London Datastore |
 |---------|-----------------|
