@@ -8,10 +8,8 @@ Usage:
     uv run scripts/discover.py --source custody
 
 If automated discovery fails for a dataset, visit the URL manually in a
-browser and find the CSV/Excel download link, then add it to london_crime/_sources.py
-in the `direct_urls` list for that source.
-
-Dataset pages (open these in a browser if automated discovery fails):
+browser, find the dataset's short ID from its page URL, and set it as
+`short_id` for that source in london_crime/_sources.py.
 """
 
 from __future__ import annotations
@@ -25,7 +23,7 @@ import httpx
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from london_crime._sources import SOURCES
+from london_crime._sources import DATASET_PAGES, SOURCES
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -40,17 +38,6 @@ _HEADERS = {
     "Accept-Encoding": "gzip, deflate",
     "Connection": "keep-alive",
     "Upgrade-Insecure-Requests": "1",
-}
-
-# London Datastore dataset page URLs for manual discovery
-DATASET_PAGES = {
-    "recorded-crime-borough":   "https://data.london.gov.uk/dataset/mps-recorded-crime-geographic-breakdown-exy3m",
-    "recorded-crime-ward":      "https://data.london.gov.uk/dataset/mps-recorded-crime-geographic-breakdown-exy3m",
-    "knife-crime":              "https://data.london.gov.uk/dataset/mps-knife-enabled-crime-dashboard-data",
-    "stop-search":              "https://data.london.gov.uk/dataset/mps-stop-and-search-dashboard-data-e6yjz",
-    "custody":                  "https://data.london.gov.uk/dataset/mps-custody-arrests-disposals-strip-searches-2r7po",
-    "homicide":                 "https://data.london.gov.uk/dataset/mps-homicide-dashboard-data",
-    "monthly-crime-dashboard":  "https://data.london.gov.uk/dataset/mps-monthly-crime-dashboard-data-e5n6w",
 }
 
 
@@ -115,31 +102,27 @@ def discover(source_key: str | None = None) -> None:
 
     for source in sources:
         key = source["key"]
-        ckan_id = source.get("ckan_id", key)
+        short_id = source["short_id"]
         print(f"\n{source['name']} ({key})")
 
         found: list[str] = []
 
         # Try DataPress API
-        found.extend(_try_datapress_api(ckan_id))
+        found.extend(_try_datapress_api(short_id))
 
         # Try HTML scrape
-        if not found and key in DATASET_PAGES:
-            page_id = DATASET_PAGES[key].split("/")[-1]
-            found.extend(_try_html_scrape(page_id))
+        if not found:
+            found.extend(_try_html_scrape(short_id))
 
         if found:
             print("  Found URLs:")
             for u in found:
                 print(f"    {u}")
-            print(f"\n  Add these to direct_urls for '{key}' in london_crime/_sources.py")
+            print("\n  Resource matching is done via short_id in london_crime/_sources.py")
         else:
-            page_url = DATASET_PAGES.get(key, "")
             print("  Automated discovery failed.")
-            if page_url:
-                print(f"  → Open manually: {page_url}")
-                print("    Right-click CSV/Excel link → Copy link address")
-                print(f"    Add to direct_urls for '{key}' in london_crime/_sources.py")
+            print(f"  → Open manually: {DATASET_PAGES[key]}")
+            print("    Right-click CSV/Excel link → Copy link address")
 
 
 if __name__ == "__main__":
