@@ -16,22 +16,22 @@ The geographic breakdown files (borough, ward, LSOA) are in **wide format**: one
 
 | File | Rows | Description |
 |------|------|-------------|
-| `recorded-crime-borough.parquet` | 1,032 wide | Borough-level counts, Mar 2024–Feb 2026. Major + minor offence categories. |
-| `recorded-crime-borough-historical.parquet` | 949 wide | Same, Apr 2010–Jul 2023. |
-| `recorded-crime-ward.parquet` | 18,688 wide | Ward-level, Feb 2024–Feb 2026. |
-| `recorded-crime-ward-historical.parquet` | 18,629 wide | Ward-level, Apr 2010–Jul 2023. |
-| `recorded-crime-lsoa.parquet` | 105,620 wide | LSOA-level, Feb 2024–Feb 2026. |
-| `recorded-crime-lsoa-historical.parquet` | 113,269 wide | LSOA-level, Apr 2010–Jul 2023. |
-| `stop-search.parquet` | 1,351,798 | Individual stop and search records. Jun 2020–Dec 2025. Ethnicity, legislation, object of search, outcome. |
-| `custody.parquet` | 32,870 | Arrests by ethnicity, disposal type, and strip search data. Jan 2021–Feb 2026. |
-| `monthly-crime-dashboard.parquet` | 59,431 | Pan-London monthly knife crime totals by area, borough, and SNT. Mar 2022–Feb 2026. |
-| `vawg-offences.parquet` | 411,341 | Violence against women and girls offence counts by type, borough, month. Jan 2014–Feb 2026. |
-| `vawg-victims.parquet` | 410,576 | VAWG victim demographics by offence type and borough. Jan 2014–Feb 2026. |
-| `business-crime-offences.parquet` | 2,023,536 | Business crime offence counts by type, borough, month. ~3.5 years to Feb 2026. |
-| `business-crime-outcomes.parquet` | 2,875,711 | Business crime outcomes by type, borough, month. ~3.5 years to Feb 2026. |
-| `homicide.parquet` | 4,512 | Homicide accused records from Apr 2003. Method, demographics, borough. Proceedings date max Sep 2023 (ongoing cases excluded). |
+| `recorded-crime-borough.parquet` | 989 wide | Borough-level counts, Sep 2024–Aug 2026. Major + minor offence categories. |
+| `recorded-crime-borough-historical.parquet` | 1,124 wide | Same layout, Sep 2020–Aug 2024. Older 48-month window. |
+| `recorded-crime-ward.parquet` | 18,804 wide | Ward-level, Sep 2024–Aug 2026. |
+| `recorded-crime-ward-historical.parquet` | 20,951 wide | Ward-level, Sep 2020–Aug 2024. Older 48-month window. |
+| `recorded-crime-lsoa.parquet` | 106,275 wide | LSOA-level, Sep 2024–Aug 2026. |
+| `recorded-crime-lsoa-historical.parquet` | 121,222 wide | LSOA-level, Aug 2020–Jul 2024. Older 48-month window. |
+| `stop-search.parquet` | 1,275,512 | Individual stop and search records. May 2020–Sep 2026. Ethnicity, legislation, object of search, outcome. |
+| `custody.parquet` | 17,941 | Arrests by ethnicity, disposal type, and strip search data. Jan 2022–Aug 2026. |
+| `monthly-crime-dashboard.parquet` | 60,732 | Pan-London monthly knife crime totals by area, borough, and SNT. Sep 2022–Aug 2026. |
+| `vawg-offences.parquet` | 413,821 | Violence against women and girls offence counts by type, borough, month. Jan 2014–Apr 2026. |
+| `vawg-victims.parquet` | 416,894 | VAWG victim demographics by offence type and borough. Jan 2014–Apr 2026. |
+| `business-crime-offences.parquet` | 2,649,498 | Business crime offence counts by type, borough, month. Jun 2022–Aug 2026. |
+| `business-crime-outcomes.parquet` | 3,438,451 | Business crime outcomes by type, borough, month. Jun 2022–Aug 2026. |
+| `homicide.parquet` | 3,131 | Homicide records, Apr 2003–Sep 2025. Method, demographics, borough. |
 | `stolen-animals.parquet` | 5,723 | Stolen animal reports by species, borough, month. Apr 2010–Sep 2023. |
-| `thorough-searches.parquet` | 44,110 | More thorough and intimate part searches (MTIPS). Jan 2019–Feb 2026. |
+| `thorough-searches.parquet` | 56,411 | More thorough and intimate part searches (MTIPS). Jan 2019–Sep 2026. |
 
 Updated on the 6th of each month.
 
@@ -84,14 +84,14 @@ pip install git+https://github.com/fenneh/london-crime-data.git
 ```python
 from london_crime import load
 
-df = load.recorded_crime_borough()               # Mar 2024–Feb 2026
-df = load.recorded_crime_borough(historical=True) # Apr 2010–Jul 2023
+df = load.recorded_crime_borough()               # current 24-month window
+df = load.recorded_crime_borough(historical=True) # older 48-month window
 df = load.stop_search(remote=True)               # pull from GitHub without cloning
 ```
 
 ## Geographic data: wide format
 
-Each row covers one (location, major category, minor category) combination. Columns: `majortext`, `minortext`, `boroughname` (or `wardname`/`lsoaname`), then `202403`, `202404`, ... `202602`.
+Each row covers one (location, major category, minor category) combination. Columns vary by file: `group` and `subgroup` for the offence category, plus `bocu` (borough), `wardname` and `wardcode` (ward), or `lsoa_code`, `lsoa_name` and `borough` (LSOA), then monthly count columns `202409`, `202410`, ... `202608`.
 
 Convert to long format with `unpivot`:
 
@@ -104,7 +104,7 @@ month_cols = [c for c in df.columns if c.isdigit()]
 
 long = df.unpivot(
     on=month_cols,
-    index=["majortext", "minortext", "boroughname"],
+    index=["group", "subgroup", "bocu"],
     variable_name="month",
     value_name="count",
 )
@@ -113,8 +113,8 @@ long = df.unpivot(
 ### Example: knife crime by borough
 
 ```python
-knife = long.filter(pl.col("minortext").str.contains("KNIFE|BLADE|WEAPON"))
-by_borough = knife.group_by("boroughname").agg(pl.col("count").sum()).sort("count", descending=True)
+knife = long.filter(pl.col("subgroup").str.contains("KNIFE|BLADE|WEAPON"))
+by_borough = knife.group_by("bocu").agg(pl.col("count").sum()).sort("count", descending=True)
 print(by_borough.head(10))
 ```
 
@@ -135,7 +135,7 @@ by_ethnicity = (
 print(by_ethnicity)
 ```
 
-The stop-search file combines snapshots from different schema versions. Records from Mar 2024 onwards use `stopdate` (DD/MM/YYYY); earlier records use `date` (YYYY-MM-DD).
+The stop-search file combines snapshots from different schema versions. Newer records use `stopdate`, mid-period records use `date`, and the oldest snapshots use `year_month`. All three are ISO-style strings.
 
 ## Refreshing locally
 
