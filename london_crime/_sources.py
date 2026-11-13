@@ -34,7 +34,7 @@ SOURCES: list[dict] = [
         "resource_name_contains": "Borough Level Crime (Historical)",
         "prefer_historical": True,
         "output": "recorded-crime-borough-historical.parquet",
-        "description": "Full historical borough-level crime data from January 2008.",
+        "description": "Older 48-month borough-level window.",
     },
     {
         "key": "recorded-crime-ward",
@@ -52,7 +52,7 @@ SOURCES: list[dict] = [
         "resource_name_contains": "Ward Level Crime (Historical)",
         "prefer_historical": True,
         "output": "recorded-crime-ward-historical.parquet",
-        "description": "Full historical ward-level crime data from January 2008.",
+        "description": "Older 48-month ward-level window.",
     },
     {
         "key": "recorded-crime-lsoa",
@@ -70,7 +70,7 @@ SOURCES: list[dict] = [
         "resource_name_contains": "LSOA Level Crime (Historical)",
         "prefer_historical": True,
         "output": "recorded-crime-lsoa-historical.parquet",
-        "description": "Full historical LSOA-level crime data from January 2008.",
+        "description": "Older 48-month LSOA-level window.",
     },
 
     # ── Stop and search ───────────────────────────────────────────────────────

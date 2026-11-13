@@ -16,22 +16,22 @@ The geographic breakdown files (borough, ward, LSOA) are in **wide format**: one
 
 | File | Rows | Description |
 |------|------|-------------|
-| `recorded-crime-borough.parquet` | 989 wide | Borough-level counts, Sep 2024–Aug 2026. Major + minor offence categories. |
-| `recorded-crime-borough-historical.parquet` | 1,124 wide | Same layout, Sep 2020–Aug 2024. Older 48-month window. |
-| `recorded-crime-ward.parquet` | 18,804 wide | Ward-level, Sep 2024–Aug 2026. |
-| `recorded-crime-ward-historical.parquet` | 20,951 wide | Ward-level, Sep 2020–Aug 2024. Older 48-month window. |
-| `recorded-crime-lsoa.parquet` | 106,275 wide | LSOA-level, Sep 2024–Aug 2026. |
-| `recorded-crime-lsoa-historical.parquet` | 121,222 wide | LSOA-level, Aug 2020–Jul 2024. Older 48-month window. |
-| `stop-search.parquet` | 1,275,512 | Individual stop and search records. May 2020–Sep 2026. Ethnicity, legislation, object of search, outcome. |
-| `custody.parquet` | 17,941 | Arrests by ethnicity, disposal type, and strip search data. Jan 2022–Aug 2026. |
-| `monthly-crime-dashboard.parquet` | 60,732 | Pan-London monthly knife crime totals by area, borough, and SNT. Sep 2022–Aug 2026. |
+| `recorded-crime-borough.parquet` | 989 wide | Borough-level counts, Nov 2024–Oct 2026. Major + minor offence categories. |
+| `recorded-crime-borough-historical.parquet` | 1,093 wide | Same layout, Nov 2020–Oct 2024. Older 48-month window. |
+| `recorded-crime-ward.parquet` | 18,815 wide | Ward-level, Nov 2024–Oct 2026. |
+| `recorded-crime-ward-historical.parquet` | 21,912 wide | Ward-level, Nov 2020–Oct 2024. Older 48-month window. |
+| `recorded-crime-lsoa.parquet` | 106,219 wide | LSOA-level, Nov 2024–Oct 2026. |
+| `recorded-crime-lsoa-historical.parquet` | 122,032 wide | LSOA-level, Nov 2020–Oct 2024. Older 48-month window. |
+| `stop-search.parquet` | 1,273,595 | Individual stop and search records. May 2020–Oct 2026. Ethnicity, legislation, object of search, outcome. |
+| `custody.parquet` | 18,555 | Arrests by ethnicity, disposal type, and strip search data. Jan 2022–Oct 2026. |
+| `monthly-crime-dashboard.parquet` | 60,689 | Pan-London monthly knife crime totals by area, borough, and SNT. Oct 2022–Sep 2026. |
 | `vawg-offences.parquet` | 413,821 | Violence against women and girls offence counts by type, borough, month. Jan 2014–Apr 2026. |
 | `vawg-victims.parquet` | 416,894 | VAWG victim demographics by offence type and borough. Jan 2014–Apr 2026. |
-| `business-crime-offences.parquet` | 2,649,498 | Business crime offence counts by type, borough, month. Jun 2022–Aug 2026. |
-| `business-crime-outcomes.parquet` | 3,438,451 | Business crime outcomes by type, borough, month. Jun 2022–Aug 2026. |
+| `business-crime-offences.parquet` | 2,672,796 | Business crime offence counts by type, borough, month. Jun 2022–Oct 2026. |
+| `business-crime-outcomes.parquet` | 3,855,360 | Business crime outcomes by type, borough, month. Jun 2022–Oct 2026. |
 | `homicide.parquet` | 3,131 | Homicide records, Apr 2003–Sep 2025. Method, demographics, borough. |
 | `stolen-animals.parquet` | 5,723 | Stolen animal reports by species, borough, month. Apr 2010–Sep 2023. |
-| `thorough-searches.parquet` | 56,411 | More thorough and intimate part searches (MTIPS). Jan 2019–Sep 2026. |
+| `thorough-searches.parquet` | 58,208 | More thorough and intimate part searches (MTIPS). Jan 2019–Oct 2026. |
 
 Updated on the 6th of each month.
 

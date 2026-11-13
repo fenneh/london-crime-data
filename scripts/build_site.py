@@ -103,6 +103,21 @@ def build_sample_rows() -> dict:
     }
 
 
+def build_datasets() -> dict[str, dict]:
+    out = {}
+    for path in sorted(DATA_DIR.glob("*.parquet")):
+        schema = pl.read_parquet_schema(path)
+        months = sorted(c for c in schema if c.isdigit())
+        out[path.name] = {
+            "rows": pl.scan_parquet(path).select(pl.len()).collect().item(),
+            "columns": len(schema),
+            "months": len(months),
+            "start": f"{months[0][:4]}-{months[0][4:]}" if months else None,
+            "end": f"{months[-1][:4]}-{months[-1][4:]}" if months else None,
+        }
+    return out
+
+
 def build_meta() -> dict:
     sizes = {}
     for name, filename in [
@@ -134,6 +149,7 @@ def main() -> None:
         "stop_search_ethnicity.json": build_stop_search_ethnicity,
         "sample_rows.json": build_sample_rows,
         "meta.json": build_meta,
+        "datasets.json": build_datasets,
     }
 
     for filename, builder in datasets.items():

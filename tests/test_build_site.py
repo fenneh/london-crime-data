@@ -121,6 +121,39 @@ class TestBuildSampleRows:
         assert result["rows"][0][2] == "Westminster"
 
 
+class TestBuildDatasets:
+    def test_reports_rows_columns_and_month_range(self, monkeypatch, tmp_path):
+        data_dir = _use_data_dir(monkeypatch, tmp_path)
+        pl.DataFrame({"group": ["a"], "202401": [1], "202403": [3]}).write_parquet(
+            data_dir / "recorded-crime-borough.parquet"
+        )
+        pl.DataFrame({"x": [1, 2]}).write_parquet(data_dir / "homicide.parquet")
+
+        result = build_site.build_datasets()
+
+        assert result["recorded-crime-borough.parquet"] == {
+            "rows": 1,
+            "columns": 3,
+            "months": 2,
+            "start": "2024-01",
+            "end": "2024-03",
+        }
+        assert result["homicide.parquet"] == {
+            "rows": 2,
+            "columns": 1,
+            "months": 0,
+            "start": None,
+            "end": None,
+        }
+
+    def test_ignores_non_parquet_files(self, monkeypatch, tmp_path):
+        data_dir = _use_data_dir(monkeypatch, tmp_path)
+        pl.DataFrame({"x": [1]}).write_parquet(data_dir / "homicide.parquet")
+        (data_dir / "notes.txt").write_text("ignore me")
+
+        assert list(build_site.build_datasets()) == ["homicide.parquet"]
+
+
 class TestBuildMeta:
     def test_reports_latest_month_and_optional_sizes(self, monkeypatch, tmp_path):
         data_dir = _use_data_dir(monkeypatch, tmp_path)

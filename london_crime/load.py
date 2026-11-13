@@ -45,7 +45,7 @@ def recorded_crime_borough(*, historical: bool = False, remote: bool = False) ->
     Common Assault, GBH, Harassment, Stalking, etc.
 
     Args:
-        historical: If True, returns the full dataset from January 2008.
+        historical: If True, returns the older 48-month window.
                     If False (default), returns the most recent 24 months.
     """
     filename = "recorded-crime-borough-historical.parquet" if historical else "recorded-crime-borough.parquet"
@@ -56,7 +56,7 @@ def recorded_crime_ward(*, historical: bool = False, remote: bool = False) -> pl
     """Monthly crime counts at ward level with major + minor offence categories.
 
     Args:
-        historical: If True, returns the full dataset from January 2008.
+        historical: If True, returns the older 48-month window.
     """
     filename = "recorded-crime-ward-historical.parquet" if historical else "recorded-crime-ward.parquet"
     return _load(filename, remote)
@@ -66,7 +66,7 @@ def recorded_crime_lsoa(*, historical: bool = False, remote: bool = False) -> pl
     """Monthly crime counts at Lower Super Output Area (LSOA) level.
 
     Args:
-        historical: If True, returns the full dataset from January 2008.
+        historical: If True, returns the older 48-month window.
     """
     filename = "recorded-crime-lsoa-historical.parquet" if historical else "recorded-crime-lsoa.parquet"
     return _load(filename, remote)
