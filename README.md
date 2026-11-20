@@ -126,9 +126,16 @@ from london_crime import load
 
 df = load.stop_search()
 
-# Newer records use 'ethnicappearance', older records use 'ethnic_appearance'
+# Newer records use 'ethnicappearance', older records use 'ethnic_appearance'.
+# Older snapshots also spell the Chinese category with a comma.
+ethnicity = pl.coalesce("ethnicappearance", "ethnic_appearance").str.replace_all(",", "")
 by_ethnicity = (
-    df.group_by("ethnicappearance")
+    df.select(ethnicity.alias("ethnicity"))
+    .filter(
+        pl.col("ethnicity").is_not_null()
+        & ~pl.col("ethnicity").is_in(["", "Unknown"])
+    )
+    .group_by("ethnicity")
     .agg(pl.len().alias("stops"))
     .sort("stops", descending=True)
 )

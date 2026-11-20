@@ -84,19 +84,56 @@ class TestBuildByBorough:
 
 
 class TestBuildStopSearchEthnicity:
-    def test_excludes_null_and_unknown(self, monkeypatch, tmp_path):
-        data_dir = _use_data_dir(monkeypatch, tmp_path)
-        df = pl.DataFrame(
+    def _write(self, data_dir, rows):
+        pl.DataFrame(
             {
-                "ethnicappearance": ["Asian", "Asian", "White", "Unknown", None],
-            }
-        )
-        df.write_parquet(data_dir / "stop-search.parquet")
+                "ethnicappearance": [new for new, _ in rows],
+                "ethnic_appearance": [old for _, old in rows],
+            },
+            schema={"ethnicappearance": pl.String, "ethnic_appearance": pl.String},
+        ).write_parquet(data_dir / "stop-search.parquet")
+
+    def test_excludes_null_unknown_and_blank(self, monkeypatch, tmp_path):
+        data_dir = _use_data_dir(monkeypatch, tmp_path)
+        self._write(data_dir, [
+            ("Asian", None),
+            ("Asian", None),
+            ("White", None),
+            ("Unknown", None),
+            (None, None),
+            ("", None),
+        ])
 
         result = build_site.build_stop_search_ethnicity()
 
         assert result["labels"] == ["Asian", "White"]
         assert result["values"] == [2, 1]
+
+    def test_combines_current_and_legacy_columns(self, monkeypatch, tmp_path):
+        data_dir = _use_data_dir(monkeypatch, tmp_path)
+        self._write(data_dir, [
+            ("Black", None),
+            (None, "Black"),
+            (None, "Asian"),
+        ])
+
+        result = build_site.build_stop_search_ethnicity()
+
+        assert result["labels"] == ["Black", "Asian"]
+        assert result["values"] == [2, 1]
+        assert "3 of 3" in result["note"]
+
+    def test_normalises_legacy_chinese_label(self, monkeypatch, tmp_path):
+        data_dir = _use_data_dir(monkeypatch, tmp_path)
+        self._write(data_dir, [
+            ("Chinese Japanese Or Any Other South East Asian", None),
+            (None, "Chinese, Japanese, Or Any Other South East Asian"),
+        ])
+
+        result = build_site.build_stop_search_ethnicity()
+
+        assert result["labels"] == ["Chinese Japanese Or Any Other South East Asian"]
+        assert result["values"] == [2]
 
 
 class TestBuildSampleRows:

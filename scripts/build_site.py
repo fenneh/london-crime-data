@@ -68,20 +68,31 @@ def build_by_borough() -> dict:
 
 
 def build_stop_search_ethnicity() -> dict:
-    df = pl.read_parquet(DATA_DIR / "stop-search.parquet")
+    df = pl.read_parquet(
+        DATA_DIR / "stop-search.parquet",
+        columns=["ethnicappearance", "ethnic_appearance"],
+    )
+    # Older snapshots store the field under ethnic_appearance and spell the
+    # Chinese category with a comma.
+    ethnicity = pl.coalesce("ethnicappearance", "ethnic_appearance").str.replace_all(",", "")
     result = (
-        df.filter(
-            pl.col("ethnicappearance").is_not_null()
-            & (pl.col("ethnicappearance") != "Unknown")
+        df.select(ethnicity.alias("ethnicity"))
+        .filter(
+            pl.col("ethnicity").is_not_null()
+            & ~pl.col("ethnicity").is_in(["", "Unknown"])
         )
-        .group_by("ethnicappearance")
+        .group_by("ethnicity")
         .agg(pl.len().alias("stops"))
         .sort("stops", descending=True)
     )
+    populated = int(result["stops"].sum())
     return {
-        "labels": result["ethnicappearance"].to_list(),
+        "labels": result["ethnicity"].to_list(),
         "values": [int(v) for v in result["stops"].to_list()],
-        "note": "Officer-defined ethnicity. Covers records where this field is populated (~260K of 1.35M total).",
+        "note": (
+            f"Officer-defined ethnicity. {populated:,} of {len(df):,} records have it populated; "
+            "older snapshots store it under a different column."
+        ),
     }
 
 
